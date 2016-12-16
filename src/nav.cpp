@@ -3,9 +3,9 @@
 Eigen::Matrix3f K_pos, P_pos, Q_pos, R_pos;
 Eigen::Matrix3f K_ang, P_ang, Q_ang, R_ang;
 
-#ifdef _DEBUG_
-  float phi, theta, psi;
-#endif
+Eigen::Matrix3f T_magno;
+float phi, theta, psi;
+Eigen::Vector3f eul;
 
 void init_nav()
 {
@@ -27,8 +27,25 @@ void init_nav()
   R_ang = 0.1*Eigen::Matrix3f::Identity();
 
   // Get initial orientation from accelerometer
+  theta = asin(acc_filt(0)/acc_filt.norm());
 
-  
+  if(abs(theta-M_PI/2) < ANG_TOL || abs(theta+M_PI/2) < ANG_TOL)
+    return;
+
+  phi =asin(-acc_filt(1)/acc_filt.norm()/cos(theta));
+
+  T_magno << cos(theta), sin(theta)*sin(phi), sin(theta)*cos(phi),
+		        0, cos(phi), -sin(phi),
+		        -sin(theta), cos(theta)*sin(phi), cos(theta)*cos(phi);
+
+  mag_filt = T_magno*mag;
+  psi = MAG_DECLINATION - atan2(mag_filt(1),mag_filt(0));
+
+  eul << phi, theta, psi;
+  euler2quat(eul, quat);
+
+  pc.printf("q_init=%f, %f, %f, %f \r\n", quat(0), quat(1), quat(2), quat(3));
+
 
   #ifdef _DEBUG_
     pc.printf("      Initialized Nav Moudle      \r\n");
@@ -53,27 +70,64 @@ void run_ekf()
   quat += Omega*q_old*dt;
   quat/=quat.norm();
 
-  // Time Update of Position
-  Eigen::Vector3f vel_old(vel);
-  vel = vel_old + dt*acc_filt;
-
-  Eigen::Vector3f pos_old(pos);
-  pos = pos_old + dt*pos;
-
-  #ifdef _DEBUG_
-    phi = atan2( 2*(-quat(0)*quat(1)+ quat(2)*quat(3)), 1- 2*quat(1)*quat(1) -2*quat(2)*quat(2) )*180.0f/3.142f;
-    theta = asin(-2*(quat(0)*quat(2)+quat(1)*quat(3)))*180.0f/3.142f;
-    psi = atan2( 2*(-quat(0)*quat(3)+ quat(2)*quat(1)), 1- 2*quat(3)*quat(3) -2*quat(2)*quat(2) )*180.0f/3.142f;
-  #endif
-
   // Measurement Update of Orientation
+  theta = asin(acc_filt(0)/acc_filt.norm());
 
+  if(abs(theta-M_PI/2) < ANG_TOL || abs(theta+M_PI/2) < ANG_TOL)
+    return;
+
+  phi =asin(-acc_filt(1)/acc_filt.norm()/cos(theta));
+
+  T_magno << cos(theta), sin(theta)*sin(phi), sin(theta)*cos(phi),
+		        0, cos(phi), -sin(phi),
+		        -sin(theta), cos(theta)*sin(phi), cos(theta)*cos(phi);
+
+  mag_filt = T_magno*mag;
+  psi = MAG_DECLINATION - atan2(mag_filt(1),mag_filt(0));
+
+  eul<< phi, theta, psi;
+
+  float dummy[4];
+  Eigen::Map<Eigen::Vector4f> q_1(dummy);
+  euler2quat(eul, q_1);
+
+  // Fusion of Orientation
+  //quat = (quat+q_old)/2;
+
+
+  // Time Update of Position
+  vel += dt*acc_filt;
+  pos += dt*vel;
 
   // Measurement Update of Position
 
+  static int cnt=0;
+  if(cnt%100==0)
+  {
+    pc.printf("quat = %f, %f, %f, %f \r\n", quat(0), quat(1), quat(2), quat(3));
+    pc.printf("eul = %f, %f, %f \r\n", eul(0)*180.0/M_PI, eul(1)*180.0/M_PI, eul(2)*180.0/M_PI);
+    pc.printf("q_1 = %f, %f, %f, %f \r\n\r\n", q_1(0), q_1(1), q_1(2), q_1(3));
+  }
+  cnt++;
+
 }
 
-Eigen::Matrix3f getRotMat()
+void getRotMat(Eigen::Matrix3f &R)
 {
-  return Eigen::Quaternionf(quat(0), quat(1), quat(2), quat(3)).toRotationMatrix();
+  R = Eigen::Quaternionf(quat(0), quat(1), quat(2), quat(3)).toRotationMatrix();
+}
+
+void quat2euler(Eigen::Map<Eigen::Vector4f> q, Eigen::Vector3f &eul)
+{
+  eul << atan2( 2*(-quat(0)*quat(1)+ quat(2)*quat(3)), 1- 2*quat(1)*quat(1) -2*quat(2)*quat(2) ),
+         asin(-2*(quat(0)*quat(2)+quat(1)*quat(3))),
+         atan2( 2*(-quat(0)*quat(3)+ quat(2)*quat(1)), 1- 2*quat(3)*quat(3) -2*quat(2)*quat(2) );
+}
+
+void euler2quat(Eigen::Vector3f &eul, Eigen::Map<Eigen::Vector4f> q)
+{
+  q << cos(eul(2)/2)*cos(eul(1)/2)*cos(eul(0)/2) + sin(eul(2)/2)*sin(eul(1)/2)*sin(eul(0)/2),
+       cos(eul(2)/2)*cos(eul(1)/2)*sin(eul(0)/2) - sin(eul(2)/2)*sin(eul(1)/2)*cos(eul(0)/2),
+       cos(eul(2)/2)*sin(eul(1)/2)*cos(eul(0)/2) + sin(eul(2)/2)*cos(eul(1)/2)*sin(eul(0)/2),
+       sin(eul(2)/2)*cos(eul(1)/2)*cos(eul(0)/2) - cos(eul(2)/2)*sin(eul(1)/2)*sin(eul(0)/2);
 }

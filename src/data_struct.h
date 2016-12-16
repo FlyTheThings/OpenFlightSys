@@ -81,9 +81,8 @@ extern gps_bytes gps_data;
 extern Eigen::Map<Eigen::Vector3f> acc, gyro, mag, acc_filt, gyro_filt, mag_filt, vel, pos;
 extern Eigen::Map<Eigen::Vector4f> quat;
 
-#ifdef _DEBUG_
+extern Eigen::Vector3f eul;
 extern float phi, theta, psi;
-#endif
 
 // Declare Identity Matrices
 extern Eigen::Matrix3f I3;

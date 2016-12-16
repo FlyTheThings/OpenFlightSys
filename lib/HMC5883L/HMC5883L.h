@@ -91,9 +91,9 @@ extern Serial pc;
 
 //Values MODE
 #define HMC5883L_CONTINUOUS   0x00
-#define HMC5883L_SINGLE         0x01
+#define HMC5883L_SINGLE       0x01
 #define HMC5883L_IDLE         0x02
-#define HMC5883L_SLEEP         0x03
+#define HMC5883L_SLEEP        0x03
 
 
 

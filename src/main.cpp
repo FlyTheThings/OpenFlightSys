@@ -65,6 +65,9 @@ int main()
   // Initialize and start IMU => MPU6050 + HMC5883L
   init_imu();
 
+  // Get readings from INU for initial estimation
+  update_imu();
+
   // Get gyro bias estimate from averaging
   get_gyro_bias_est();
 
@@ -114,7 +117,7 @@ int main()
      wait_ms(DT);
      icnt++;
 
-
+     /*
      if(icnt%100==0)
      {
       //pc.printf("phi=%f, theta=%f, psi=%f \r\n", phi, theta, psi);
@@ -127,6 +130,7 @@ int main()
 
       //pc.printf("g0=%f, g1=%f, g2=%f \r\n", gyro_filt(0), gyro_filt(1), gyro_filta(2));
     }
+    */
 
    }
 

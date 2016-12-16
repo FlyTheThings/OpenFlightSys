@@ -12,8 +12,8 @@
 MPU6050 mpu6050;
 HMC5883L hmc5883l(I2C_SDA, I2C_SCL);
 
-Eigen::Matrix3f K_acc;
-Eigen::Vector3f b_acc, b_gyro;
+Eigen::Matrix3f K_acc, K_mag;
+Eigen::Vector3f b_acc, b_gyro, b_mag;
 
 int t_mag_cur, t_mag_prev;
 
@@ -22,8 +22,26 @@ bool flag_calib=false;
 void init_imu()
 {
   //Set Accel Scale factor and bias
-  K_acc.setIdentity();
-  b_acc << 0,0,0;
+
+  #ifdef IMU_CALIB
+    K_acc.setIdentity();
+    b_acc << 0,0,0;
+    K_mag.setIdentity();
+    b_mag << 0,0,0;
+  #else
+    K_mag << 1.06014,-0.0184109,0.0286314,
+            -0.0184109,1.073,-0.0301887,
+             0.0286314,-0.0301887,1.15973;
+
+    b_mag << -29.1081,39.0101,86.0596;
+
+    K_acc << 0.999768,-0.000546799,-0.000606615,
+            -0.000546799,1.00205,0.00112101,
+            -0.000606615,0.00112101,0.989965;
+
+    b_acc << 0.004542,0.00267406,0.10332;
+  #endif
+
 
   //Set up I2C
   //i2c.frequency(400000);  // use fast (400 kHz) I2C
@@ -88,10 +106,6 @@ void update_imu()
       gyro_filt = gyro - b_gyro;
       //tempCount = mpu6050.readTempData();  // Read the x/y/z adc values
       //temperature = (tempCount) / 340. + 36.53; // Temperature in degrees Centigrade
-
-      #ifdef _PRINT_GPS_
-        pc.printf("flat=%f, flon=%f, falt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
-      #endif
      }
 
   t_mag_cur=t.read_ms();
@@ -102,6 +116,13 @@ void update_imu()
     mag(0) = mag(0) < mag_val1 ? mag(0) : mag(0) - mag_val2;
     mag(1) = mag(1) < mag_val1 ? mag(1) : mag(1) - mag_val2;
     mag(2) = mag(2) < mag_val1 ? mag(2) : mag(2) - mag_val2;
+    mag_filt = K_mag*mag+b_mag;
+    #ifndef IMU_CALIB
+      float temp = mag_filt(1);
+      mag_filt(1) = mag_filt(0);
+      mag_filt(0) = -temp;
+      mag = mag_filt;
+    #endif
     t_mag_prev=t_mag_cur;
   }
 
@@ -110,13 +131,14 @@ void update_imu()
      pc.printf("acc=%f,%f,%f \r\n", acc(0), acc(1), acc(2));
      pc.printf("gyro=%f,%f,%f\r\n", gyro(0), gyro(1), gyro(2));
   #endif
+
 }
 
 void get_gyro_bias_est()
 {
   pc.printf("<------------------------------------>\r\n");
   pc.printf("   Bias Estimation Started   \r\n");
-  int cnt =0, n_cnt =100;
+  int cnt =0, n_cnt =1000;
   while(cnt<n_cnt)
   {
     if(mpu6050.readByte(MPU6050_ADDRESS, INT_STATUS) & 0x01)

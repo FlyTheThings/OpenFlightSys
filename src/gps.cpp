@@ -62,4 +62,9 @@ void update_gps()
         nav_data.val.falt = (float) tgps.f_altitude();
         }
       #endif
+
+
+      #ifdef _PRINT_GPS_
+        pc.printf("flat=%f, flon=%f, falt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
+      #endif
 }

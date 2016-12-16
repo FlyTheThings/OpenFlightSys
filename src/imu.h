@@ -7,6 +7,7 @@
 
 #include "mbed.h"
 #include "data_struct.h"
+#include "math.h"
 
 extern I2C i2c;
 extern bool flag_calib;
