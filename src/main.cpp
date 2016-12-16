@@ -5,7 +5,6 @@
 #include "nav.h"
 #include "gps.h"
 #include "imu.h"
-#include "servo.h"
 #include "radio.h"
 
 
