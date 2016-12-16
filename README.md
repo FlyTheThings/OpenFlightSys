@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mcprakash/OpenFlightSys.png)](https://travis-ci.org/mcprakash/OpenFlightSys)
+
 # OpenFlightSys
 Open Source Quad-copter Flight Controller
 
