@@ -9,6 +9,7 @@
  #include "Eigen.h"
  #include <Geometry>
 
+ extern bool start_flag;
  extern Serial pc;
 
  extern Timer t;
@@ -27,7 +28,7 @@
    char ch_enc3[4];
    float vel[3];
    float falt;
-   char dummy[4];
+   int radar_dist;
  } nav_struct;
 
  typedef struct
@@ -92,5 +93,7 @@ extern Eigen::Matrix4f I4;
 void init_data_struct();
 
 void serial_transmit();
+
+void serial_callback();
 
 #endif

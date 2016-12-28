@@ -7,6 +7,9 @@ Eigen::Matrix3f T_magno;
 float phi, theta, psi;
 Eigen::Vector3f eul;
 
+float dummy[4];
+Eigen::Map<Eigen::Vector4f> q_m(dummy);
+
 void init_nav()
 {
   #ifdef _DEBUG_
@@ -67,7 +70,7 @@ void run_ekf()
           gyro_filt(2),  gyro_filt(1), -gyro_filt(0),  0;
 
   // Do time update of quaternion
-  quat += Omega*q_old*dt;
+  quat += 0.5*Omega*q_old*dt;
   quat/=quat.norm();
 
   // Measurement Update of Orientation
@@ -87,12 +90,11 @@ void run_ekf()
 
   eul<< phi, theta, psi;
 
-  float dummy[4];
-  Eigen::Map<Eigen::Vector4f> q_1(dummy);
-  euler2quat(eul, q_1);
+  euler2quat(eul, q_m);
 
   // Fusion of Orientation
-  //quat = (quat+q_old)/2;
+  // quat = (quat+q_m)/2;
+  // quat/=quat.norm();
 
 
   // Time Update of Position
@@ -100,30 +102,35 @@ void run_ekf()
   pos += dt*vel;
 
   // Measurement Update of Position
-
-  static int cnt=0;
-  if(cnt%100==0)
-  {
-    pc.printf("quat = %f, %f, %f, %f \r\n", quat(0), quat(1), quat(2), quat(3));
-    pc.printf("eul = %f, %f, %f \r\n", eul(0)*180.0/M_PI, eul(1)*180.0/M_PI, eul(2)*180.0/M_PI);
-    pc.printf("q_1 = %f, %f, %f, %f \r\n\r\n", q_1(0), q_1(1), q_1(2), q_1(3));
-  }
-  cnt++;
-
+  #ifdef NAV_DEBUG
+    static int cnt=0;
+    if(cnt%100==0)
+    {
+      pc.printf("q_m = %f, %f, %f, %f \r\n", q_m(0), q_m(1), q_m(2), q_m(3));
+      pc.printf("eul = %f, %f, %f \r\n", eul(0)*180.0/M_PI, eul(1)*180.0/M_PI, eul(2)*180.0/M_PI);
+      quat2euler(quat, eul);
+      pc.printf("quat = %f, %f, %f, %f \r\n", quat(0), quat(1), quat(2), quat(3));
+      pc.printf("eul = %f, %f, %f \r\n\r\n", eul(0)*180.0/M_PI, eul(1)*180.0/M_PI, eul(2)*180.0/M_PI);
+    }
+    cnt++;
+  #endif
 }
 
+// Function to get current Rotation Matrix
 void getRotMat(Eigen::Matrix3f &R)
 {
   R = Eigen::Quaternionf(quat(0), quat(1), quat(2), quat(3)).toRotationMatrix();
 }
 
+// Function to convert Quaternion to Euler angles (roll, pitch, yaw)
 void quat2euler(Eigen::Map<Eigen::Vector4f> q, Eigen::Vector3f &eul)
 {
-  eul << atan2( 2*(-quat(0)*quat(1)+ quat(2)*quat(3)), 1- 2*quat(1)*quat(1) -2*quat(2)*quat(2) ),
-         asin(-2*(quat(0)*quat(2)+quat(1)*quat(3))),
-         atan2( 2*(-quat(0)*quat(3)+ quat(2)*quat(1)), 1- 2*quat(3)*quat(3) -2*quat(2)*quat(2) );
+  eul << atan2( 2*(q(0)*q(1)+ q(2)*q(3)), 1- 2*q(1)*q(1) -2*q(2)*q(2) ),
+         asin(2*(q(0)*q(2)-q(1)*q(3))),
+         atan2( 2*(q(0)*q(3)+ q(2)*q(1)), 1- 2*q(3)*q(3) -2*q(2)*q(2) );
 }
 
+// Function to convert Euler angles to Quaternion
 void euler2quat(Eigen::Vector3f &eul, Eigen::Map<Eigen::Vector4f> q)
 {
   q << cos(eul(2)/2)*cos(eul(1)/2)*cos(eul(0)/2) + sin(eul(2)/2)*sin(eul(1)/2)*sin(eul(0)/2),
