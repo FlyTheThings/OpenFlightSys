@@ -26,7 +26,7 @@ int main()
   init_radar();
 
   // Initialize GPS module => Ublox Neo 8m
-  //init_gps();
+  init_gps();
 
   // Initialize Radio module => NRF24L01
   //init_radio();
@@ -68,13 +68,13 @@ int main()
      if(icnt%100==0)
      {
 
-       pc.printf("radar_dist=%d \r\n", nav_data.val.radar_dist);
+      //pc.printf("radar_dist=%d \r\n", nav_data.val.radar_dist);
       //pc.printf("norm=%f \r\n", acc_filt.norm());
       //pc.printf("phi=%f, theta=%f, psi=%f \r\n", phi, theta, psi);
 
       //pc.printf("magx=%f, magy=%f, magz=%f \r\n", mag(0), mag(1), mag(2));
       //pc.printf("<------------------------------------>\r\n");
-      //pc.printf("lat=%f, lon=%f, alt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
+      pc.printf("lat=%f, lon=%f, alt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
       //pc.printf("lat=%f, lon=%f, alt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
       //pc.printf("<------------------------------------>\r\n");
 
