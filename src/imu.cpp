@@ -1,3 +1,32 @@
+/************************************************************************
+* FILENAME :        imu.cpp             DESIGN REF:
+*
+* DESCRIPTION :
+*       IMU source file for Drone Control system
+*
+* NOTES :
+*       This file is a part of the OpenFlightSys Github project
+*       Visit https://github.com/mcprakash/OpenFlightSys for more details
+*
+*       Copyright <Chandra Mangipudi> (2016)  All rights reserved.
+*
+* AUTHOR :    Chandra Mangipudi        START DATE :    01/01/2017
+*
+* LICENSE:
+*       This program is free software: you can redistribute it and/or modify
+*       it under the terms of the GNU General Public License as published by
+*       the Free Software Foundation, either version 3 of the License, or
+*       (at your option) any later version.
+*
+*       This program is distributed in the hope that it will be useful,
+*       but WITHOUT ANY WARRANTY; without even the implied warranty of
+*        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*        GNU General Public License for more details.
+*
+*       You should have received a copy of the GNU General Public License
+*       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+**/
 
 #include "imu.h"
 #include "Eigen.h"
@@ -83,7 +112,7 @@ void init_imu()
   t_mag_prev=t.read_ms();
 
   // Get gyro bias estimate from averaging
-  get_gyro_bias_est();
+  gyro_bias_est();
 
   // Get readings from INU for initial state estimation
   update_imu();
@@ -133,7 +162,7 @@ void update_imu()
 
 }
 
-void get_gyro_bias_est()
+void gyro_bias_est()
 {
   pc.printf("<------------------------------------>\r\n");
   pc.printf("   Bias Estimation Started   \r\n");
