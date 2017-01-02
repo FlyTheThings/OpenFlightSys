@@ -2,7 +2,7 @@
  * @file nRF24L01P.h
  *
  * @author Owen Edwards
- * 
+ *
  * @section LICENSE
  *
  * Copyright (c) 2010 Owen Edwards
@@ -73,10 +73,10 @@
 #define DEFAULT_NRF24L01P_ADDRESS       ((unsigned long long) 0xE7E7E7E7E7 )
 #define DEFAULT_NRF24L01P_ADDRESS_WIDTH  5
 #define DEFAULT_NRF24L01P_CRC            NRF24L01P_CRC_8_BIT
-#define DEFAULT_NRF24L01P_RF_FREQUENCY  (NRF24L01P_MIN_RF_FREQUENCY + 2)
+#define DEFAULT_NRF24L01P_RF_FREQUENCY  (NRF24L01P_MIN_RF_FREQUENCY + 50)
 #define DEFAULT_NRF24L01P_DATARATE       NRF24L01P_DATARATE_1_MBPS
 #define DEFAULT_NRF24L01P_TX_PWR         NRF24L01P_TX_PWR_ZERO_DB
-#define DEFAULT_NRF24L01P_TRANSFER_SIZE  4
+#define DEFAULT_NRF24L01P_TRANSFER_SIZE  24
 
 /**
  * nRF24L01+ Single Chip 2.4GHz Transceiver from Nordic Semiconductor.
@@ -259,7 +259,7 @@ public:
      * @return the number of bytes actually written, or -1 for an error
      */
     int write(int pipe, char *data, int count);
-    
+
     /**
      * Receive data
      *
@@ -284,24 +284,24 @@ public:
      * Note: receive pipes are enabled when their address is set.
      */
     void disableAllRxPipes(void);
-    
+
     /**
      * Disable AutoAcknowledge function
      */
     void disableAutoAcknowledge(void);
-    
+
     /**
      * Enable AutoAcknowledge function
      *
      * @param pipe the receive pipe
      */
     void enableAutoAcknowledge(int pipe = NRF24L01P_PIPE_P0);
-    
+
     /**
      * Disable AutoRetransmit function
      */
     void disableAutoRetransmit(void);
-    
+
     /**
      * Enable AutoRetransmit function
      *

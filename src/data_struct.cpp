@@ -90,10 +90,8 @@ void init_data_struct()
 
 void serial_transmit()
 {
-  for(int i=0; i<4; i++)
-   pc.putc(ch_encode[i]);
   for(uint i=0; i<sizeof(nav_data.ch); i++)
-   pc.putc(nav_data.ch[i]);
+    pc.putc(nav_data.ch[i]);
 
   //pc.printf("\r\n");
 }

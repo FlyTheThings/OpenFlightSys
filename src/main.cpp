@@ -59,7 +59,7 @@ int main()
   init_gps();
 
   // Initialize Radio module => NRF24L01
-  //init_radio();
+  init_radio();
 
   #ifdef IMU_CALIB
     t.start();
@@ -81,7 +81,6 @@ int main()
    t.start();
 
    int icnt=0;
-   pc.printf("Outside while loop \r\n");
    while(1)
    {
      nav_data.val.t = t.read_ms();
@@ -89,7 +88,7 @@ int main()
      update_radar();
      run_ekf();
      //serial_transmit();
-     //transmit_radio();
+     transmit_radio();
 
      wait_ms(DT);
      icnt++;
@@ -104,7 +103,7 @@ int main()
 
       //pc.printf("magx=%f, magy=%f, magz=%f \r\n", mag(0), mag(1), mag(2));
       //pc.printf("<------------------------------------>\r\n");
-      pc.printf("lat=%f, lon=%f, alt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
+      //pc.printf("lat=%f, lon=%f, alt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
       //pc.printf("lat=%f, lon=%f, alt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
       //pc.printf("<------------------------------------>\r\n");
 
