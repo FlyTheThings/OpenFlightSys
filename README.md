@@ -4,4 +4,4 @@
 Open Source Quad-copter Flight Controller
 
 # Schematic
-![Alt text](https://s6.postimg.org/o7rhe3f9t/IMG_20161212_185904.jpg)
+<img src="https://s6.postimg.org/w6rr2byfl/IMG_20170104_132345.jpg" width="320">
