@@ -7,4 +7,4 @@ Open Source Quad-copter Flight Controller
 <img src="https://s6.postimg.org/w6rr2byfl/IMG_20170104_132345.jpg" width="320">
 
 # Model Viewer
-<img src="https://s6.postimg.org/tcfvgryfl/quad_model_view.png" width ="320">
+<img src="https://s6.postimg.org/tcfvgryfl/quad_model_view.png" width ="640">
