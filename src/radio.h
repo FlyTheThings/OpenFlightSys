@@ -42,6 +42,10 @@ extern nRF24L01P radio;
 
 void init_radio();
 
-void transmit_radio();
+void transmit_radio1();
+
+void transmit_radio2();
+
+void transmit_radio3();
 
 #endif

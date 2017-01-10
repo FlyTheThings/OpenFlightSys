@@ -35,6 +35,9 @@ nRF24L01P radio(SPI_MOSI, SPI_MISO, SPI_SCK, SPI_CS, D8);
 
 void init_radio()
 {
+  radio.powerDown();
+  radio.disable();
+  wait_ms(100);
   radio.powerUp();
   radio.setRfFrequency(DEFAULT_NRF24L01P_RF_FREQUENCY);
   radio.setAirDataRate(NRF24L01P_DATARATE_1_MBPS);
@@ -57,11 +60,17 @@ void init_radio()
   #endif
 }
 
-void transmit_radio()
+void transmit_radio1()
 {
   radio.write( NRF24L01P_PIPE_P0, nav_data.ch, RADIO_PCK_SIZE );
-  wait_ms(1);
+}
+
+void transmit_radio2()
+{
   radio.write( NRF24L01P_PIPE_P0, &nav_data.ch[RADIO_PCK_SIZE], RADIO_PCK_SIZE );
-  wait_ms(1);
+}
+
+void transmit_radio3()
+{
   radio.write( NRF24L01P_PIPE_P0, &nav_data.ch[2*RADIO_PCK_SIZE], RADIO_PCK_SIZE );
 }

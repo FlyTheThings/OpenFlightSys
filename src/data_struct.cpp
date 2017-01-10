@@ -29,7 +29,7 @@
 **/
 
 #include "data_struct.h"
-
+#include "radio.h"
 // Define variables for program start
 bool start_flag=false;
 Serial pc(USBTX, USBRX); // tx, rx
@@ -53,9 +53,6 @@ Eigen::Map<Eigen::Vector4f> quat(nav_data.val.q);
 // Define all Eigen matrices
 Eigen::Matrix3f I3;
 Eigen::Matrix4f I4;
-
-// Encoding for serial transmission
-char ch_encode[4]={'1','9','9','1'};
 
 // Initialize all data variables
 void init_data_struct()

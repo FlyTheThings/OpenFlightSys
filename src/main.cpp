@@ -69,28 +69,25 @@ int main()
     t.reset();
   #endif
 
-   // Wait for user to start program
-   while(1)
-   {
-     if(start_flag == true)
-      break;
-     wait_ms(100);
-   }
-   wait(2);
+
+   wait(1);
 
    t.start();
-
    int icnt=0;
+   int t_delay = 0;
    while(1)
    {
      nav_data.val.t = t.read_ms();
+     transmit_radio1();
      update_imu();
      update_radar();
      run_ekf();
-     //serial_transmit();
-     transmit_radio();
+     transmit_radio2();
 
-     wait_ms(DT);
+     t_delay = DT - (t.read_ms() - nav_data.val.t);
+     if(t_delay>0)
+       wait_ms(t_delay);
+
      icnt++;
 
 
@@ -100,6 +97,9 @@ int main()
       //pc.printf("radar_dist=%d \r\n", nav_data.val.radar_dist);
       //pc.printf("norm=%f \r\n", acc_filt.norm());
       //pc.printf("phi=%f, theta=%f, psi=%f \r\n", phi, theta, psi);
+
+      //pc.printf("dt = %d", t1 - nav_data.val.t);
+      //pc.printf("q = %f, %f, %f, %f \r\n", nav_data.val.q[0], nav_data.val.q[1], nav_data.val.q[2], nav_data.val.q[3] );
 
       //pc.printf("magx=%f, magy=%f, magz=%f \r\n", mag(0), mag(1), mag(2));
       //pc.printf("<------------------------------------>\r\n");
