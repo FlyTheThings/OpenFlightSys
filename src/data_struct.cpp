@@ -30,9 +30,6 @@
 
 #include "data_struct.h"
 #include "radio.h"
-// Define variables for program start
-bool start_flag=false;
-Serial pc(USBTX, USBRX); // tx, rx
 
 // Define nav_data struct
 nav_data_bytes nav_data;
@@ -59,8 +56,8 @@ void init_data_struct()
 {
         // Map all Eigen Variables to data structures
   #ifdef _DEBUG_
-        pc.printf("<------------------------------------>\r\n");
-        pc.printf("      Initializing Data matrices      \r\n");
+        radio.printf("<------------------------------------>\r\n");
+        radio.printf("      Initializing Data matrices      \r\n");
   #endif
         I3.setIdentity();
         I4.setIdentity();
@@ -74,60 +71,12 @@ void init_data_struct()
         quat <<  1.0f, 0.0f, 0.0f, 0.0f;
 
         nav_data.val.ch_enc1[0] = '1'; nav_data.val.ch_enc1[1] = '9'; nav_data.val.ch_enc1[2] = '9'; nav_data.val.ch_enc1[3] = '1';
-        nav_data.val.ch_enc2[0] = '1'; nav_data.val.ch_enc2[1] = '9'; nav_data.val.ch_enc2[2] = '9'; nav_data.val.ch_enc2[3] = '2';
-        nav_data.val.ch_enc3[0] = '1'; nav_data.val.ch_enc3[1] = '9'; nav_data.val.ch_enc3[2] = '9'; nav_data.val.ch_enc3[3] = '3';
-        //nav_data.val.dummy[0] = 'd'; nav_data.val.dummy[1] = 'u'; nav_data.val.dummy[2] = 'm'; nav_data.val.dummy[3] = 'y';
+        //nav_data.val.ch_enc2[0] = '1'; nav_data.val.ch_enc2[1] = '9'; nav_data.val.ch_enc2[2] = '9'; nav_data.val.ch_enc2[3] = '2';
+        //nav_data.val.ch_enc3[0] = '1'; nav_data.val.ch_enc3[1] = '9'; nav_data.val.ch_enc3[2] = '9'; nav_data.val.ch_enc3[3] = '3';
 
   #ifdef _DEBUG_
-        pc.printf("Initialized data matrices successfully\r\n");
-        pc.printf("<------------------------------------>\r\n");
+        radio.printf("Initialized data matrices successfully\r\n");
+        radio.printf("<------------------------------------>\r\n");
   #endif
 
-}
-
-void serial_transmit()
-{
-        for(uint i=0; i<sizeof(nav_data.ch); i++)
-                pc.putc(nav_data.ch[i]);
-
-        //pc.printf("\r\n");
-}
-
-
-void serial_callback()
-{
-        char c = pc.getc();
-
-        // Press 'a' to start program
-        if(c=='a')
-        {
-                start_flag=true;
-    #ifdef _DEBUG_
-                pc.printf("Starting Program \r\n");
-    #endif
-        }
-
-        // Press 'b' to end program
-        if(c=='b')
-        {
-    #ifdef _DEBUG_
-                pc.printf("Closing program \r\n");
-    #endif
-                delete &acc;
-                delete &gyro;
-                delete &mag;
-                delete &acc_filt;
-                delete &gyro_filt;
-                delete &mag_filt;
-                exit(0);
-        }
-
-  #ifdef IMU_CALIB
-        // Press 'i' to get stable reading for 1 iteration of IMU calibration
-        if(c=='i')
-        {
-                flag_calib=true;
-                pc.printf("flag_cmd entered \r\n");
-        }
-  #endif
 }

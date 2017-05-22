@@ -57,16 +57,16 @@ double flat, flon, falt;
 void init_gps()
 {
   #ifdef _DEBUG_
-        pc.printf("<------------------------------------>\r\n");
-        pc.printf("            Initializing GPS          \r\n");
+        radio.printf("<------------------------------------>\r\n");
+        radio.printf("            Initializing GPS          \r\n");
   #endif
 
         gps.baud(38400);
         gps.attach(&update_gps);
 
   #ifdef _DEBUG_
-        pc.printf("            Initialized GPS          \r\n");
-        pc.printf("<------------------------------------>\r\n");
+        radio.printf("            Initialized GPS          \r\n");
+        radio.printf("<------------------------------------>\r\n");
   #endif
 }
 
@@ -80,7 +80,7 @@ void update_gps()
         nav_data.val.flon = ngps.gprmc_longitude();
       #endif
 
-        //pc.putc(c);
+        //radio.putc(c);
       #ifdef __TinyGPS
         if(tgps.encode(c))
         {
@@ -95,6 +95,6 @@ void update_gps()
 
 
       #ifdef _PRINT_GPS_
-        pc.printf("flat=%f, flon=%f, falt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
+        radio.printf("flat=%f, flon=%f, falt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
       #endif
 }

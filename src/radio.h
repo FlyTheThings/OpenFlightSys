@@ -35,33 +35,13 @@
 #ifndef radio_h
 #define radio_h
 
-#define RADIO_NRF2
+#include <mbed.h>
+extern Serial radio;
 
-#ifdef RADIO_NRF
-  #include "nRF24L01P.h"
-  #define RADIO_PCK_SIZE 24
-  extern nRF24L01P radio;
-  void init_radio();
-  void transmit_radio1();
-  void transmit_radio2();
-  void transmit_radio3();
-#endif
-
-#ifdef RADIO_NRF2
-  #include "RF24.h"
-  #define RADIO_PCK_SIZE 24
-  extern char radio_cmds[RADIO_PCK_SIZE];
-  extern RF24 radio;
-  void init_radio();
-  void radio_signal_wait();
-  void transmit_radio1();
-  void transmit_radio2();
-  void transmit_radio3();
-#endif
-
-#ifdef RADIO_XBEE
-  #include "XBeeLib.h"
-  void init_radio();
-#endif
+#define RADIO_PCK_SIZE 64
+extern char radio_cmds[RADIO_PCK_SIZE];
+void radio_signal_wait();
+void transmit_radio();
+void radio_callback();
 
 #endif

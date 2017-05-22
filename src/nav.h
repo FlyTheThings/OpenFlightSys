@@ -41,6 +41,7 @@
 #include "math.h"
 #include "Eigen.h"
 #include "data_struct.h"
+#include "radio.h"
 
 #define RAD2DEG 180.0/M_PI // Radian to degree conversion factor
 #define DEG2RAD M_PI/180.0 // Degree to radian conversion factor

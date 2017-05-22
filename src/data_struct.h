@@ -44,9 +44,6 @@
  #include "Eigen.h"
  #include <Geometry>
 
-extern bool start_flag;
-extern Serial pc;
-
 extern Timer t;
 
 typedef struct
@@ -54,15 +51,11 @@ typedef struct
         char ch_enc1[4];
         int t;
         float q[4];
-
-        char ch_enc2[4];
-        float pos[3];
         float flat;
         float flon;
-
-        char ch_enc3[4];
-        float vel[3];
         float falt;
+        float pos[3];
+        float vel[3];
         int radar_dist;
 } nav_struct;
 
@@ -126,9 +119,5 @@ extern Eigen::Matrix4f I4;
 
 // Initialization function for data structures
 void init_data_struct();
-
-void serial_transmit();
-
-void serial_callback();
 
 #endif

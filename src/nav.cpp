@@ -43,8 +43,8 @@ Eigen::Map<Eigen::Vector4f> q_m(dummy);
 void init_nav()
 {
   #ifdef _DEBUG_
-        pc.printf("<------------------------------------>\r\n");
-        pc.printf("      Initializing Nav Module     \r\n");
+        radio.printf("<------------------------------------>\r\n");
+        radio.printf("      Initializing Nav Module     \r\n");
   #endif
 
         K_pos = 0.5*Eigen::Matrix3f::Identity();
@@ -77,12 +77,12 @@ void init_nav()
         eul << phi, theta, psi;
         euler2quat(eul, quat);
 
-        pc.printf("q_init=%f, %f, %f, %f \r\n", quat(0), quat(1), quat(2), quat(3));
+        radio.printf("q_init=%f, %f, %f, %f \r\n", quat(0), quat(1), quat(2), quat(3));
 
 
   #ifdef _DEBUG_
-        pc.printf("      Initialized Nav Moudle      \r\n");
-        pc.printf("<------------------------------------>\r\n");
+        radio.printf("      Initialized Nav Moudle      \r\n");
+        radio.printf("<------------------------------------>\r\n");
   #endif
 }
 
@@ -136,11 +136,11 @@ void run_ekf()
         static int cnt=0;
         if(cnt%100==0)
         {
-                pc.printf("q_m = %f, %f, %f, %f \r\n", q_m(0), q_m(1), q_m(2), q_m(3));
-                pc.printf("eul = %f, %f, %f \r\n", eul(0)*180.0/M_PI, eul(1)*180.0/M_PI, eul(2)*180.0/M_PI);
+                radio.printf("q_m = %f, %f, %f, %f \r\n", q_m(0), q_m(1), q_m(2), q_m(3));
+                radio.printf("eul = %f, %f, %f \r\n", eul(0)*180.0/M_PI, eul(1)*180.0/M_PI, eul(2)*180.0/M_PI);
                 quat2euler(quat, eul);
-                pc.printf("quat = %f, %f, %f, %f \r\n", quat(0), quat(1), quat(2), quat(3));
-                pc.printf("eul = %f, %f, %f \r\n\r\n", eul(0)*180.0/M_PI, eul(1)*180.0/M_PI, eul(2)*180.0/M_PI);
+                radio.printf("quat = %f, %f, %f, %f \r\n", quat(0), quat(1), quat(2), quat(3));
+                radio.printf("eul = %f, %f, %f \r\n\r\n", eul(0)*180.0/M_PI, eul(1)*180.0/M_PI, eul(2)*180.0/M_PI);
         }
         cnt++;
   #endif

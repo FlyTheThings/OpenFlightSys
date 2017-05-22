@@ -34,6 +34,7 @@
 
 #include "mbed.h"
 #include "ultrasonic.h"
+#include "radio.h"
 
 extern ultrasonic radar;
 

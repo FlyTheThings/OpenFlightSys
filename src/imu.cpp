@@ -76,13 +76,13 @@ void init_imu()
 
         // Read the WHO_AM_I register, this is a good test of communication
         uint8_t whoami = mpu6050.readByte(MPU6050_ADDRESS, WHO_AM_I_MPU6050); // Read WHO_AM_I register for MPU-6050
-        //pc.printf("I AM 0x%x\n\r", whoami); pc.printf("I SHOULD BE 0x68\n\r");
+        //radio.printf("I AM 0x%x\n\r", whoami); radio.printf("I SHOULD BE 0x68\n\r");
 
         if (whoami == 0x68) // WHO_AM_I should always be 0x68
         {
     #ifdef _DEBUG_
-                pc.printf("<------------------------------------>\r\n");
-                pc.printf("   Initializing MPU6050 Acc + Gyro   \r\n");
+                radio.printf("<------------------------------------>\r\n");
+                radio.printf("   Initializing MPU6050 Acc + Gyro   \r\n");
     #endif
                 //mpu6050.MPU6050SelfTest(SelfTest); // Start by performing self test and reporting values
 
@@ -92,17 +92,17 @@ void init_imu()
                 mpu6050.getGres();
 
     #ifdef _DEBUG_
-                pc.printf("aRes=%f\r\n", aRes);
-                pc.printf("gRes=%f\r\n", gRes);
-                pc.printf("   Initialized MPU6050 successfully   \r\n");
-                pc.printf("<------------------------------------>\r\n");
+                radio.printf("aRes=%f\r\n", aRes);
+                radio.printf("gRes=%f\r\n", gRes);
+                radio.printf("   Initialized MPU6050 successfully   \r\n");
+                radio.printf("<------------------------------------>\r\n");
     #endif
 
         }
         else
         {
-                pc.printf("Could not connect to MPU6050: \r\n");
-                pc.printf("%#x \r\n",  whoami);
+                radio.printf("Could not connect to MPU6050: \r\n");
+                radio.printf("%#x \r\n",  whoami);
         }
 
         wait(1);
@@ -155,17 +155,17 @@ void update_imu()
         }
 
   #ifdef _PRINT_IMU_
-        pc.printf("mag=%f,%f,%f \r\n", mag(0), mag(1), mag(2));
-        pc.printf("acc=%f,%f,%f \r\n", acc(0), acc(1), acc(2));
-        pc.printf("gyro=%f,%f,%f\r\n", gyro(0), gyro(1), gyro(2));
+        radio.printf("mag=%f,%f,%f \r\n", mag(0), mag(1), mag(2));
+        radio.printf("acc=%f,%f,%f \r\n", acc(0), acc(1), acc(2));
+        radio.printf("gyro=%f,%f,%f\r\n", gyro(0), gyro(1), gyro(2));
   #endif
 
 }
 
 void gyro_bias_est()
 {
-        pc.printf("<------------------------------------>\r\n");
-        pc.printf("   Bias Estimation Started   \r\n");
+        radio.printf("<------------------------------------>\r\n");
+        radio.printf("   Bias Estimation Started   \r\n");
         int cnt =0, n_cnt =1000;
         while(cnt<n_cnt)
         {
@@ -183,9 +183,9 @@ void gyro_bias_est()
         }
         b_gyro/=n_cnt;
 
-        pc.printf("b0=%f, b1=%f, b2=%f \r\n", b_gyro(0), b_gyro(1), b_gyro(2));
-        pc.printf("   Bias Estimation Completed   \r\n");
-        pc.printf("<------------------------------------>\r\n");
+        radio.printf("b0=%f, b1=%f, b2=%f \r\n", b_gyro(0), b_gyro(1), b_gyro(2));
+        radio.printf("   Bias Estimation Completed   \r\n");
+        radio.printf("<------------------------------------>\r\n");
 
 }
 
@@ -195,8 +195,8 @@ void gyro_bias_est()
 
 void imu_calib()
 {
-        pc.printf("<------------------------------------>\r\n");
-        pc.printf("Starting IMU calibration \r\n");
+        radio.printf("<------------------------------------>\r\n");
+        radio.printf("Starting IMU calibration \r\n");
         int cnt =0;
 
         Eigen::VectorXf ax(n_calib), ay(n_calib), az(n_calib);
@@ -224,12 +224,12 @@ void imu_calib()
                         mx(cnt)= imu_data.val.mag[0];
                         my(cnt)= imu_data.val.mag[1];
                         mz(cnt)= imu_data.val.mag[2];
-                        pc.printf("Calib => cnt = %d, max_cnt=%d \r\n", cnt, n_calib);
+                        radio.printf("Calib => cnt = %d, max_cnt=%d \r\n", cnt, n_calib);
 
                         if(cnt==0)
                         {
-                                pc.printf("acc = %f, %f, %f \r\n", ax(0)/n_iter, ay(0)/n_iter, az(0)/n_iter);
-                                pc.printf("mag = %f, %f, %f \r\n", mx(0), my(0), mz(0));
+                                radio.printf("acc = %f, %f, %f \r\n", ax(0)/n_iter, ay(0)/n_iter, az(0)/n_iter);
+                                radio.printf("mag = %f, %f, %f \r\n", mx(0), my(0), mz(0));
                         }
                         flag_calib=false;
                         cnt++;
@@ -238,13 +238,13 @@ void imu_calib()
                         wait_ms(DT*100);
         }
 
-        //pc.printf("Data acquisition for calibration completed \r\n");
+        //radio.printf("Data acquisition for calibration completed \r\n");
         ax/=n_iter;
         ay/=n_iter;
         az/=n_iter;
 
         for(int i=0; i<n_calib; i++)
-                pc.printf("%f,%f,%f,%f,%f,%f \r\n", ax(i), ay(i), az(i), mx(i), my(i), mz(i));
+                radio.printf("%f,%f,%f,%f,%f,%f \r\n", ax(i), ay(i), az(i), mx(i), my(i), mz(i));
 
         exit(0);
 }

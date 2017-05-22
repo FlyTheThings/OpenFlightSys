@@ -44,6 +44,7 @@
 #include "mbed.h"
 #include "data_struct.h"
 #include "math.h"
+#include "radio.h"
 
 extern I2C i2c;
 extern bool flag_calib;

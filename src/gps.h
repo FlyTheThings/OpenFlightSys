@@ -36,6 +36,7 @@
 #define gps_h
 
 #include "mbed.h"
+#include "radio.h"
 
 extern Serial gps;
 
