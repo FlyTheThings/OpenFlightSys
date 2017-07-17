@@ -30,29 +30,17 @@
 
 #include "gps.h"
 #include "data_struct.h"
-
-#define __TinyGPS
-
 #include "TinyGPS.h"
-#include "nmea.h"
 
 Serial gps(PA_9, PA_10);
 
 bool flg=true;
 
-#ifdef __NGPS
-NMEA ngps(ALL);
-#endif
-
-#ifdef __TinyGPS
 TinyGPS tgps;
 unsigned long age;
-#endif
 
 char c;
-#ifdef __TinyGPS
 double flat, flon, falt;
-#endif
 
 void init_gps()
 {
@@ -74,14 +62,6 @@ void update_gps()
 {
         c=gps.getc();
 
-      #ifdef __NGPS
-        ngps.decode(c);
-        nav_data.val.flat = ngps.gprmc_latitude();
-        nav_data.val.flon = ngps.gprmc_longitude();
-      #endif
-
-        //radio.putc(c);
-      #ifdef __TinyGPS
         if(tgps.encode(c))
         {
                 tgps.f_get_position(&flat, &flon, &age);
@@ -91,8 +71,6 @@ void update_gps()
 
                 nav_data.val.falt = (float) tgps.f_altitude();
         }
-      #endif
-
 
       #ifdef _PRINT_GPS_
         radio.printf("flat=%f, flon=%f, falt=%f \r\n", nav_data.val.flat, nav_data.val.flon, nav_data.val.falt);
