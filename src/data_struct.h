@@ -49,7 +49,7 @@ extern Timer t;
 typedef struct
 {
         char ch_enc1[4];
-        int t;
+        float t;
         float q[4];
         float flat;
         float flon;
